@@ -3,8 +3,12 @@ const NodemonPlugin = require('nodemon-webpack-plugin');
 
 module.exports = {
   mode: 'development',
-  entry: './app.ts',
-  target : 'node',
+  entry: '/src/app.ts',
+  target: 'node',
+  output: {
+    filename: 'server.generated.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
   devtool: 'inline-source-map',
   module: {
     rules: [
@@ -18,11 +22,5 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js'],
   },
-  output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
-  },
-  plugins: [
-    new NodemonPlugin(),
-  ],
+  plugins: [new NodemonPlugin()],
 };
