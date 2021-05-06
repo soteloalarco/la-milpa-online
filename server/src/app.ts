@@ -18,8 +18,15 @@ app.get('/', (_, res) => {
 
 app.use('/static', express.static(path.join(__dirname, '../public')));
 
-io.on('connect', () => {
-  console.log('a user conected');
+io.on('connect', (socket) => {
+  log(chalk.whiteBright.bgBlack.bold('a user connected'));
+  socket.on('disconnect', () => {
+    log(chalk.redBright.bgBlack.bold('user disconected'));
+  });
+  socket.on('chat message', (msg) => {
+    log(chalk.blue.bgBlack('message:') + chalk.gray.bgBlack(msg));
+    io.emit('chat message', msg);
+  });
 });
 
 server.listen(port, hostname, () => {

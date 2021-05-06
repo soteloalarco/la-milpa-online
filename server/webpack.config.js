@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const NodemonPlugin = require('nodemon-webpack-plugin');
+const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
   mode: 'development',
@@ -23,4 +25,5 @@ module.exports = {
     extensions: ['.ts', '.js'],
   },
   plugins: [new NodemonPlugin()],
+  externals: [nodeExternals()],
 };
