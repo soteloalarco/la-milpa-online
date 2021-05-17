@@ -5,7 +5,7 @@ const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
   mode: 'development',
-  entry: '/src/app.ts',
+  entry: '/src/index.ts',
   target: 'node',
   output: {
     filename: 'server.generated.js',

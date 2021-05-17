@@ -1,38 +1,22 @@
 import chalk from 'chalk';
-import express from 'express';
-import path from 'path';
-import http from 'http';
-import { Server } from 'socket.io';
+import { Server as HttpServer } from 'http';
+import { Server, Socket } from 'socket.io';
 
 const log = console.log;
-const hostname = '127.0.0.1';
-const port = 3000;
 
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
+export function createApplication(httpServer: HttpServer): Server {
+  const io = new Server(httpServer);
 
-app.get('/', (_, res) => {
-  res.sendFile(path.join(__dirname, '../src/index.html'));
-});
-
-app.use('/static', express.static(path.join(__dirname, '../public')));
-
-io.on('connect', (socket) => {
-  log(chalk.whiteBright.bgBlack.bold('a user connected'));
-  socket.on('disconnect', () => {
-    log(chalk.redBright.bgBlack.bold('user disconected'));
+  io.on('connect', (socket: Socket) => {
+    log(chalk.whiteBright.bgBlack.bold('a user connected'));
+    socket.on('disconnect', (reason) => {
+      log(chalk.redBright.bgBlack.bold('user disconected: ', reason));
+    });
+    socket.on('chat message', (msg) => {
+      log(chalk.blue.bgBlack('message:') + chalk.gray.bgBlack(msg));
+      io.emit('chat message', msg);
+    });
   });
-  socket.on('chat message', (msg) => {
-    log(chalk.blue.bgBlack('message:') + chalk.gray.bgBlack(msg));
-    io.emit('chat message', msg);
-  });
-});
 
-server.listen(port, hostname, () => {
-  log(
-    chalk.yellowBright.bgBlack.bold(
-      `Server running at http://${chalk.green(hostname)}:${chalk.red(port)}/`,
-    ),
-  );
-});
+  return io;
+}
